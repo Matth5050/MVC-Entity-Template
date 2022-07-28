@@ -37,6 +37,12 @@ namespace BestRestaurants.Controllers
       return RedirectToAction("Index");
     }
 
+    public ActionResult Details(int id)
+    {
+      Restaurant thisRestaurant = _db.Restaurants.FirstOrDefault(restaurant => restaurant.RestaurantId == id);
+      return View(thisRestaurant);
+    }
+
     public ActionResult Edit(int id)
     {
       Restaurant thisRestaurant = _db.Restaurants.FirstOrDefault(restaurant => restaurant.RestaurantId == id);
@@ -65,6 +71,19 @@ namespace BestRestaurants.Controllers
       _db.Restaurants.Remove(thisRestaurant);
       _db.SaveChanges();
       return RedirectToAction("Index");
+    }
+
+    [HttpGet]
+    public ActionResult ShowSearch()
+    {
+      return View();
+    }
+
+    [HttpPost]
+    public ActionResult ShowSearch(string searchProperty, string searchPhrase)
+    {
+        List<Restaurant> model = _db.Restaurants.Where(p => p.Name.ToLower().Contains(searchPhrase.ToLower()) || p.Description.ToLower().Contains(searchPhrase.ToLower()) || p.Category.Name.ToLower().Contains(searchPhrase.ToLower())).ToList(); 
+        return View("Index", model);
     }
   }
 }
